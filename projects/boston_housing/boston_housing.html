@@ -362,7 +362,7 @@ Standard deviation of house price: 9.188
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[43]:</div>
+<div class="prompt input_prompt">In&nbsp;[70]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="k">print</span> <span class="n">CLIENT_FEATURES</span>
@@ -381,14 +381,10 @@ Standard deviation of house price: 9.188
 <span class="c1"># 12. B: 1000(Bk - 0.63)^2 where Bk is the proportion of blacks by town </span>
 <span class="c1"># 13. LSTAT: % lower status of the population</span>
 
-<span class="n">feature_names</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">city_data</span><span class="p">[</span><span class="s1">&#39;feature_names&#39;</span><span class="p">])</span>
+<span class="n">chosen_features</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;RM&#39;</span><span class="p">,</span> <span class="s1">&#39;TAX&#39;</span><span class="p">,</span> <span class="s1">&#39;PTRATIO&#39;</span><span class="p">]</span>
+<span class="n">features</span> <span class="o">=</span> <span class="n">city_data</span><span class="o">.</span><span class="n">feature_names</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
 
-<span class="k">def</span> <span class="nf">indicies_by_features</span><span class="p">(</span><span class="n">features</span><span class="p">):</span>
-    <span class="k">return</span> <span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">feature_names</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">features</span><span class="p">)</span>
-
-<span class="n">selected_f_indicies</span> <span class="o">=</span> <span class="n">indicies_by_features</span><span class="p">([</span><span class="s1">&#39;RM&#39;</span><span class="p">,</span> <span class="s1">&#39;TAX&#39;</span><span class="p">,</span> <span class="s1">&#39;PTRATIO&#39;</span><span class="p">])</span>
-
-<span class="n">selected_values</span> <span class="o">=</span> <span class="p">[</span><span class="n">CLIENT_FEATURES</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">idx</span><span class="p">]</span> <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="n">selected_f_indicies</span><span class="p">]</span>
+<span class="n">selected_values</span> <span class="o">=</span> <span class="p">[</span><span class="n">CLIENT_FEATURES</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">features</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">f</span><span class="p">)]</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">chosen_features</span><span class="p">]</span>
 
 <span class="k">print</span> <span class="n">selected_values</span>
 </pre></div>
@@ -601,6 +597,8 @@ Ensure that you have executed the code block once you are done. You'll know the 
 <p><strong>Answer: </strong></p>
 <p>Accuracy, Precision, Recall, F1-score are appropritate for classification models evaluation.</p>
 <p>I'd pick MSE over MAE because it penalizes larger errors more.</p>
+<p><em>Updated after review:</em></p>
+<p>Now I think that MAE might be more appropriate choice for this task as it is not that sensistive to the outliers.</p>
 
 </div>
 </div>
@@ -697,7 +695,8 @@ Ensure that you have executed the code block once you are done. You'll know the 
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><strong>Answer: </strong></p>
-<p>GridSearch provides a framework to find best set of parameters for training estimator. Parameters search is performed by doing cross-validation (by default 3-fold)</p>
+<p>GridSearch provides a framework to find best set of hyperparameters for training estimator. Parameters search is performed by doing cross-validation (by default 3-fold).</p>
+<p>Generally GridSearch allow fine tuning for a learning algorithm to improve learning/testing performance</p>
 
 </div>
 </div>
@@ -719,7 +718,10 @@ Ensure that you have executed the code block once you are done. You'll know the 
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><strong>Answer: </strong></p>
 <p>Cross-validation is a technique aim to analyse how well trained model performs on independent data set.</p>
-<p>With k-fold cross-validation we are building <strong>k</strong> permutations on our data splitting it into training and validation set. And then taking average of <strong>k</strong> validation errors. This error will be the metric to choose best model/parameter set from ones we defined in GridSearch</p>
+<p>With k-fold cross-validation the training set is split into <strong>k</strong> smaller sets. Then we train a model using <strong>k-1</strong> folds as a training data and validating it on remaining part. We measure performance by calculating average on all computed errors in this loop.</p>
+<p>This error will be the metric to choose best set of hyperparameters from ones we defined in GridSearch.
+Cross also validation allows us to maximize training and test data in contrast to dividing data into 3 sets where at the end there is might be only small subset to train.
+That way resulting model and hyperparameters we select during GridSearch appeared to be less biased towards training data (as there is always hidden data in trial) and we can still do final check on independent data (test set).</p>
 
 </div>
 </div>
@@ -2012,7 +2014,8 @@ myaGezKi1QAAAABJRU5ErkJggg==
 <p><strong>Answer: </strong></p>
 <p>(3rd graph)</p>
 <p><em>Max depth:</em> 6</p>
-<p>As size of the training set increases, training error goes up, but testing error decreases</p>
+<p>As size of the training set increases, testing error descreases as we are able to learn more from the data and generize better.</p>
+<p>But at the same time training error increases as it becomes difficult to perfectly fit growing number of data points</p>
 
 </div>
 </div>
@@ -2033,7 +2036,10 @@ myaGezKi1QAAAABJRU5ErkJggg==
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><strong>Answer: </strong></p>
-<p>Model with <em>max depth = 1</em> suffers from high-bias. The one with <em>max depth = 10</em> suffers from high variance</p>
+<p>Model with <em>max depth = 1</em> suffers from high-bias.</p>
+<p>Learning curve shows that even with bigger training set, we still can't generalize well neither on training set, nor test set (loss is high)</p>
+<p>Model with <em>max depth = 10</em> suffers from high variance</p>
+<p>Learning curve on last graph shows that we keep testing error very small even for bigger number of data point, but at the same time we fail to generalize on independent dataset (big testing error). That's a clear indication of high variance.</p>
 
 </div>
 </div>
@@ -2447,8 +2453,9 @@ nuycc84lnic755xziefJzjnnXOL9H5VpUQQMgOkdAAAAAElFTkSuQmCC
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><strong>Answer: </strong></p>
-<p>Initially, as max depth increases both training and testing errors go down, but after certain point testing error starts going up</p>
-<p>It feels that model at <em>max depth = 5</em> is able to generalize better.</p>
+<p>With increasing complexity model goes through two stages from underfitting to overfitting.</p>
+<p>Initially, as max depth (complexity) increases both training and testing errors go down, but after certain point testing error starts going up while training one keeps going down (overfitting)</p>
+<p>It feels that model at <em>max depth = 5</em>, which is a turning point, is able to generalize better. (global minimum for testing error)</p>
 <p>Before that point there is clear underfitting as both training and testing errors are quite big (high bias). After that point, as we increase model complexity there is no improvement for generalisation on testing data, but variance grows.</p>
 <p>Even though graph indicates that error on testing data at <em>max depth = 8</em> is similar to one equal to <em>5</em>, I'd still pick a simpler model (<em>max depth = 5</em>)</p>
 
@@ -2582,8 +2589,12 @@ nuycc84lnic755xziefJzjnnXOL9H5VpUQQMgOkdAAAAAElFTkSuQmCC
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><strong>Answer: </strong></p>
-<p>I wouldn't rely much on this model as training data used for that is quite small and I think there is not enough possible features to describe houses.</p>
-<p>I might use it though to provide initial guess of what the estimated value of property is and then digg deeper into some characterstics of a house</p>
+<p>I wouldn't rely much on this model as:</p>
+<ul>
+<li>training data used for that is quite small and outdated</li>
+<li>there are only few features describing houses, more characteristics would help</li>
+<li>grid search is performed on entire dataset and might appear biased towards provided data and not generalize well. As a solution for that I would perform grid search on 70-80% of data, pick best hyperparameters, check model from GridSearch on testing data and, if satisfied, train model with these hyperparameters on entire set</li>
+</ul>
 
 </div>
 </div>
