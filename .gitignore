@@ -1,15 +1,8 @@
 .DS_Store
 .Python
 *.pyc
-bin/
-include/
-lib/
-lib64/
-local/
 scripts/
-share/
 data/
-pyvenv.cfg
-.venv
+venv/
 pip-selfcheck.json
 .ipynb_checkpoints
