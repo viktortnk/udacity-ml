@@ -23717,7 +23717,11 @@ Sample point 2 predicted to be in Cluster 0
 <p><strong>Answer:</strong></p>
 <p>The issue is that different customers might have different requirements for delivery. For example while 3-days a week schedule might work for retailers, it might be unacceptable for cafes and restaurants.</p>
 <p>Having customers segmented and so being able to measure impact individually might help in that scenario.</p>
-<p>We can have Group A with policy of 3 days delivery applied to it and Group B with policy of 5 days. It is important that each of these groups will have different types of cutomers. Then we can compare response to the policy between different groups, by answering questions (what impact Policy X has on customer segment Y).</p>
+<p>To test all the customers properly we'd essentially be running 2 A/B tests.</p>
+<ol>
+<li>Split Segment 0 of customers in A and B treatment groups to detect the difference</li>
+<li>Split Segment 1 of customers in A and B treatment groups to detect the difference</li>
+</ol>
 
 </div>
 </div>
